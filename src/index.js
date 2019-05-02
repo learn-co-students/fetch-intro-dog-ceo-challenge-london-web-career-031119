@@ -1,11 +1,21 @@
 console.log('%c :DDDDD', 'color: firebrick')
+//? GLOBAL VARS ******************************************
 
 const imgUrl = "https://dog.ceo/api/breeds/image/random/4"
 const breedUrl = "https://dog.ceo/api/breeds/list/all"
+const breedList = document.querySelector('#dog-breeds')
+const dogCont = document.querySelector('#dog-image-container')
+const options = document.querySelector("#breed-dropdown")
+
+//? *****************************************************
+let rexA = /^[A]/i
+let rexB = /^[B]/i
+let rexC = /^[C]/i
+let rexD = /^[D]/i
+//? *****************************************************
 
 const renderDog = dog => {
-    const dogCont = document.querySelector('#dog-image-container')
-
+    
     dog.message.forEach(dogImageURL => {
         let dogImg = document.createElement("img")
         dogImg.src = dogImageURL
@@ -14,35 +24,74 @@ const renderDog = dog => {
 }
 
 const renderDogList = dog => {
-    const breedList = document.querySelector('#dog-breeds')
 
     let nameArray = Object.keys(dog.message)
+
     nameArray.forEach(dogBreeds => {
-
         let dogList = document.createElement("li")
+            dogList.innerText = dogBreeds
+            dogList.addEventListener("click", onListClick)
+            breedList.append(dogList)
+            
+        })
+    
+    options.addEventListener('change', e => {
+    if (e.target.value == 'a'){
+        breedList.innerText = ""
+        let results = nameArray.filter(str => rexA.test(str))
+        sortList (results)
+        console.log("a")
+    } else if (e.target.value == 'b') {
+        breedList.innerText = ""
+        let results = nameArray.filter(str => rexB.test(str))
+        sortList (results)
+        console.log("b")
+    } else if (e.target.value == 'c') {
+        breedList.innerText = ""
+        let results = nameArray.filter(str => rexC.test(str))
+        sortList (results)
+        console.log("c")
+    } else if (e.target.value == 'd') {
+        breedList.innerText = ""
+        let results = nameArray.filter(str => rexD.test(str))
+        sortList (results)
+        console.log("d")
+    }
+    
+})
+}
+
+function sortList (nameArray) {
+    nameArray.forEach(dogBreeds => {
+    let dogList = document.createElement("li")
         dogList.innerText = dogBreeds
-
         dogList.addEventListener("click", onListClick)
-        
-
         breedList.append(dogList)
         
     })
-    
-    // const list = document.querySelector('#dog-breeds > li')
-    // list.addEventListener("click", onListClick)
 }
-function onListClick(colorValue){
 
-        // let list = document.querySelectorAll('#dog-breeds > li')
-        let picker = document.createElement("input")
-        
-        picker.setAttribute('type', 'color', 'id', 'colour', 'name', 'colour', 'value', `${colorValue}`)
-        list.prepend(picker)
+//********************************************
+//* Random color generator
+
+function getRandomColor() {
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
-// function onListClick(){
-    
-// }
+
+//********************************************
+//* Rainbow effect
+
+function onListClick(){
+    setInterval(function(){ 
+        document.querySelectorAll("#dog-breeds > li").forEach(item => {
+            item.style.color = `${getRandomColor()}`
+        })}, 300);       
+}
 
 //********************************************
 //* Server Callz
@@ -59,6 +108,6 @@ const init = () => {
     getBreeds()
         .then(renderDogList)
     getDogs()
-        .then(renderDog)
+        .then(renderDog) //! change at the end
 }
 init()
